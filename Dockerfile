@@ -1,0 +1,14 @@
+FROM node:20.14.0
+
+
+WORKDIR /app
+
+COPY package.json .
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 5173
+
+CMD ["npm", "start", "run"]
