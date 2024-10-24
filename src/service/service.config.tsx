@@ -1,23 +1,16 @@
+import axios from "axios";
 
-import axios, { AxiosInstance } from 'axios';
-
-// Configuración general de axios
-const service: AxiosInstance = axios.create({
-baseURL: `${import.meta.env.VITE_SERVER_URL}/api`
+const service = axios.create({
+  baseURL: `${import.meta.env.VITE_SERVER_URL}/api`,
 });
 
-// Interceptores de solicitud
-service.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+service.interceptors.request.use((config) => {
+  const storedToken = localStorage.getItem("authToken");
+  if (storedToken) {
+    config.headers.authorization = `Bearer ${storedToken}`;
+    console.log("Stored Token:", storedToken);
   }
-);
+  return config;
+});
 
 export default service;
