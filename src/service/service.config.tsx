@@ -8,7 +8,6 @@ service.interceptors.request.use((config) => {
   const storedToken = localStorage.getItem("authToken");
   if (storedToken) {
     config.headers.authorization = `Bearer ${storedToken}`;
-    console.log("Stored Token:", storedToken);
   }
   return config;
 });

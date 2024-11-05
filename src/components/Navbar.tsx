@@ -103,25 +103,29 @@ const Navbar: React.FC = () => {
         <div className="sm:hidden mt-4">
           <Link
             to="/"
-            className="block px-4 py-2 hover:bg-red-600 rounded hover:text-white"
+            className="block px-4 py-2 hover:bg-rojo rounded hover:text-white"
+            onClick={() => setIsOpen(false)}
           >
             Inicio
           </Link>
           <Link
             to="/coches"
-            className="block px-4 py-2 hover:bg-red-600 rounded hover:text-white"
+            className="block px-4 py-2 hover:bg-rojo rounded hover:text-white"
+            onClick={() => setIsOpen(false)}
           >
             Nuestros Coches
           </Link>
           <Link
             to="/sobre-nosotros"
-            className="block px-4 py-2 hover:bg-red-600 rounded hover:text-white"
+            className="block px-4 py-2 hover:bg-rojo rounded hover:text-white"
+            onClick={() => setIsOpen(false)}
           >
             Sobre nosotros
           </Link>
           <Link
             to="/por-que-importauto"
-            className="block px-4 py-2 hover:bg-red-600 rounded hover:text-white"
+            className="block px-4 py-2 hover:bg-rojo rounded hover:text-white"
+            onClick={() => setIsOpen(false)}
           >
             ¿Por qué Importauto?
           </Link>
