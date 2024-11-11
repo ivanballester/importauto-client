@@ -6,17 +6,16 @@ import placeholder from "../assets/carplaceholder.png";
 interface Car {
   _id: string;
   brand: string;
-  combustion: string;
-  cv: number;
-  images: string[];
-  km: string;
-  manual: boolean;
   model: string;
-  motor: string;
-  price: number;
-  seats: string;
-  type: string;
   year: number;
+  price: number;
+  seats: number;
+  horsepower: number;
+  fuelType: string;
+  engine: string;
+  kilometers: number;
+  transmission: string;
+  imageUrls: string[];
 }
 
 function CarsPage() {
@@ -24,7 +23,7 @@ function CarsPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null); // Estado para el coche seleccionado
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
 
   const fetchCars = async () => {
     try {
@@ -43,8 +42,8 @@ function CarsPage() {
   }, []);
 
   const openModal = (car: Car) => {
-    setSelectedCar(car); // Establece el coche seleccionado
-    setIsModalOpen(true); // Abre el modal
+    setSelectedCar(car);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -69,12 +68,12 @@ function CarsPage() {
             className="m-4 shadow-lg hover:shadow-xl rounded-lg transition-shadow duration-300"
           >
             <img
-              src={car.images[0] || placeholder}
+              src={car.imageUrls[0] || placeholder}
               alt={car.brand}
               onError={(e) => (e.currentTarget.src = placeholder)}
               style={{ width: "100%", height: "auto" }}
-              className="rounded-t-lg cursor-pointer" // Añadir cursor pointer
-              onClick={() => openModal(car)} // Abrir modal al hacer clic
+              className="rounded-t-lg cursor-pointer"
+              onClick={() => openModal(car)}
             />
             <div className="flex justify-between pb-4">
               <div className="pl-1">
@@ -82,10 +81,11 @@ function CarsPage() {
                   {car.brand} {car.model}
                 </h1>
                 <p className="text-sm">
-                  {car.motor} - {car.manual ? "Manual" : "Automático"}
+                  {car.engine} - {car.transmission}
                 </p>
                 <p className="text-sm">
-                  {car.year} | {car.km}km | {car.cv}CV | {car.combustion}
+                  {car.year} | {car.kilometers}km | {car.horsepower}CV |{" "}
+                  {car.fuelType}
                 </p>
               </div>
               <div className="pr-1">
@@ -112,20 +112,19 @@ function CarsPage() {
                   <strong>Año:</strong> {selectedCar.year}
                 </li>
                 <li>
-                  <strong>Combustible:</strong> {selectedCar.combustion}
+                  <strong>Combustible:</strong> {selectedCar.fuelType}
                 </li>
                 <li>
-                  <strong>CV:</strong> {selectedCar.cv}
+                  <strong>CV:</strong> {selectedCar.horsepower}
                 </li>
                 <li>
-                  <strong>Kilometraje:</strong> {selectedCar.km}
+                  <strong>Kilometraje:</strong> {selectedCar.kilometers}
                 </li>
                 <li>
-                  <strong>Transmisión:</strong>{" "}
-                  {selectedCar.manual ? "Manual" : "Automático"}
+                  <strong>Transmisión:</strong> {selectedCar.transmission}
                 </li>
                 <li>
-                  <strong>Motor:</strong> {selectedCar.motor}
+                  <strong>Motor:</strong> {selectedCar.engine}
                 </li>
                 <li>
                   <strong>Asientos:</strong> {selectedCar.seats}
@@ -133,9 +132,6 @@ function CarsPage() {
                 <li>
                   <strong>Precio:</strong>{" "}
                   {selectedCar.price.toLocaleString("es-ES")}€
-                </li>
-                <li>
-                  <strong>Tipo:</strong> {selectedCar.type}
                 </li>
               </ul>
               <button

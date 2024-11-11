@@ -129,6 +129,13 @@ const Navbar: React.FC = () => {
           >
             ¿Por qué Importauto?
           </Link>
+          <Link
+            to="/nuevo-coche"
+            className="block px-4 py-2 hover:bg-rojo rounded hover:text-white font-bold"
+            onClick={() => setIsOpen(false)}
+          >
+            SUBIR COCHE
+          </Link>
         </div>
       )}
     </nav>

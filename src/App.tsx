@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router";
 import CarsPage from "./pages/CarsPage";
 import AboutPage from "./pages/AboutPage";
 import WhyPage from "./pages/WhyPage";
+import CarUpload from "./pages/CarUpload";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/coches" element={<CarsPage />} />
         <Route path="/sobre-nosotros" element={<AboutPage />} />
         <Route path="/por-que-importauto" element={<WhyPage />} />
+        <Route path="/nuevo-coche" element={<CarUpload />} />
       </Routes>
     </div>
   );
