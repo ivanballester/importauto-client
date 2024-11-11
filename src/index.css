@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Personalización de las flechas de Slick */
+.slick-prev,
+.slick-next {
+  @apply absolute top-1/2 transform -translate-y-1/2 text-white  bg-opacity-50 p-2 rounded-full z-10;
+}
+
+/* Ajustamos la posición de las flechas en el borde */
+.slick-prev {
+  @apply left-0;
+}
+
+.slick-next {
+  @apply right-4;
+}

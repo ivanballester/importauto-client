@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import service from "../service/service.config";
+import { useNavigate } from "react-router-dom";
 
 const CarUploadForm: React.FC = () => {
   const [carInfo, setCarInfo] = useState({
@@ -15,16 +16,22 @@ const CarUploadForm: React.FC = () => {
     engine: "",
     transmission: "",
   });
+
   const [images, setImages] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const onDrop = (acceptedFiles: File[]) => {
     setImages(acceptedFiles);
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: "image/*" as string,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+    },
     multiple: true,
   });
 
@@ -56,6 +63,9 @@ const CarUploadForm: React.FC = () => {
         },
       });
 
+      if (!isUploading) {
+        navigate("/coches");
+      }
       console.log(response.data); // Manejar la respuesta
     } catch (error) {
       console.error("Error uploading car data:", error);
@@ -69,7 +79,9 @@ const CarUploadForm: React.FC = () => {
       onSubmit={handleSubmit}
       className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg"
     >
-      <h2 className="text-2xl font-bold mb-6">Subir Información del Coche</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Subir Información del Coche
+      </h2>
 
       {/* Información del coche */}
       <div className="grid grid-cols-2 gap-4">
@@ -249,35 +261,40 @@ const CarUploadForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Carga de imágenes */}
       <div
-        className="mt-4 border-dashed border-2 p-6 text-center cursor-pointer"
         {...getRootProps()}
+        className={`mt-4 border-2 p-6 text-center cursor-pointer ${
+          isDragActive ? "border-blue-500" : "border-dashed border-gray-300"
+        }`}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} style={{ display: "none" }} />
         <p className="text-gray-500">
-          Arrastra las imágenes aquí o haz clic para seleccionarlas
+          {isDragActive
+            ? "Suelta las imágenes aquí..."
+            : "Arrastra o haz clic para seleccionar imágenes"}
         </p>
       </div>
 
-      {images.length > 0 && (
-        <div className="mt-4">
-          <h4>Imágenes seleccionadas:</h4>
-          <ul>
-            {images.map((image, index) => (
-              <li key={index}>{image.name}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="text-center">
+        {images.length > 0 && (
+          <div className="mt-4">
+            <h4>Imágenes seleccionadas:</h4>
+            <ul>
+              {images.map((image, index) => (
+                <li key={index}>{image.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      <button
-        type="submit"
-        disabled={isUploading}
-        className="mt-6 px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-      >
-        {isUploading ? "Subiendo..." : "Subir Información"}
-      </button>
+        <button
+          type="submit"
+          disabled={isUploading}
+          className="mt-6 px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 text-center"
+        >
+          {isUploading ? "Subiendo..." : "Subir Información"}
+        </button>
+      </div>
     </form>
   );
 };
