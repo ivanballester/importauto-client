@@ -90,7 +90,7 @@ function CarsPage() {
                       <img
                         src={url}
                         alt={`Imagen ${index + 1}`}
-                        className="w-full h-full object-cover rounded-t-lg"
+                        className="w-full h-64 object-cover rounded-t-lg"
                         onError={handleImageError}
                       />
                     </div>
