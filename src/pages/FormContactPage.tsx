@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import service from "../service/service.config";
+import { Link } from "react-router-dom";
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const ContactForm: React.FC = () => {
     message: "",
   });
   const [status, setStatus] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,7 +32,13 @@ const ContactForm: React.FC = () => {
       const response = await service.post("/contact-mail", formData);
 
       if (response.status === 200) {
-        setStatus("¡Mensaje enviado correctamente!");
+        setStatus(null); // Limpia el mensaje de error
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+        setIsModalOpen(true); // Abre el modal
       } else {
         setStatus("Hubo un error al enviar el mensaje.");
       }
@@ -41,10 +49,10 @@ const ContactForm: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Formulario de Contacto
       </h2>
-      {status && <p className="text-center text-gray-600">{status}</p>}
+      {status && <p className="text-center text-red-600">{status}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-gray-700">Nombre</label>
@@ -91,6 +99,21 @@ const ContactForm: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-lg text-center">
+            <h3 className="text-lg font-bold mb-4">¡Mensaje enviado!</h3>
+            <p className="mb-4">Tu mensaje ha sido enviado correctamente.</p>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              <Link to="/coches">Volver</Link>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
