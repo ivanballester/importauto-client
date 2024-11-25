@@ -33,7 +33,7 @@ const HomePage: React.FC = () => {
           // category: "technology",
           q: `"auto" OR "coche" OR "coches"`,
           language: "es",
-          apiKey: "6246b6b821dd4e0f82e09ccdea064d06",
+          apiKey: import.meta.env.VITE_NEWS_API_KEY,
         },
       });
 
