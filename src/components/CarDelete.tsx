@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Delete from "./SVGs/Delete";
-import DeleteModal from "./DeleteModal";
+// import Delete from "./SVGs/Delete";
+// import DeleteModal from "./DeleteModal";
+import { Delete, DeleteModal } from "../components";
 
 interface CarDeleteProps {
   carId: string;

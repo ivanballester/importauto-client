@@ -2,12 +2,14 @@ import React, { useState, useContext } from "react";
 import logo from "../../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth.context";
-import BurguerMenu from "../SVGs/BurguerMenu";
-import Telefono from "../SVGs/Telefono";
-import Contacto from "../SVGs/Contacto";
-import Perfil from "../SVGs/Perfil";
-import Ubicacion from "../SVGs/Ubicacion";
-import NavbarLinks from "./NavbarLinks";
+import {
+  BurguerMenu,
+  Telefono,
+  Contacto,
+  Perfil,
+  Ubicacion,
+  NavbarLinks,
+} from "../../components";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +27,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="border-b border-gray-300">
+    <nav className="border-b border-gray-300 max-w-screen-xl mx-auto">
       <div className="mx-auto flex justify-between items-center ">
         <button
           onClick={toggleMenu}
@@ -39,7 +41,7 @@ const Navbar: React.FC = () => {
           src={logo}
           alt="Logo"
           className="w-32 h-20"
-          onClick={() => navigate("/coches")}
+          onClick={() => navigate("/")}
         />
 
         <div className="hidden sm:flex space-x-12 font-bold">

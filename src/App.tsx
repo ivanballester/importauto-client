@@ -13,7 +13,7 @@ import Admin from "./components/Auth/Admin";
 
 function App() {
   return (
-    <div className="max-w-screen-xl mx-auto">
+    <div className=" mx-auto">
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />

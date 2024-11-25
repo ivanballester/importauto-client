@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
           apiKey: "6246b6b821dd4e0f82e09ccdea064d06",
         },
       });
-      console.log(response.data);
+
       setNews(response.data.articles);
     } catch (error) {
       console.error("Error al obtener noticias:", error);

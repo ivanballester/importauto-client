@@ -1,6 +1,5 @@
 import React from "react";
-import Instagram from "../SVGs/Instagram";
-import Facebook from "../SVGs/Facebook";
+import { Facebook, Instagram } from "../../components";
 
 const FooterSocialMedia: React.FC = () => {
   return (

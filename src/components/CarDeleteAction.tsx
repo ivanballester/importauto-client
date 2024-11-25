@@ -1,7 +1,5 @@
-// components/CarDeleteAction.tsx
 import React from "react";
-import CarDelete from "./CarDelete";
-import Edit from "./SVGs/Edit";
+import { CarDelete, Edit } from "../components";
 
 interface CarDeleteActionProps {
   carId: string;

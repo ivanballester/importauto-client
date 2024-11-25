@@ -1,7 +1,5 @@
 import React from "react";
-import FooterSocialMedia from "./FooterSocialMedia";
-import FooterLinks from "./FooterLinks";
-import FooterUbi from "./FooterUbi";
+import { FooterSocialMedia, FooterLinks, FooterUbi } from "../../components";
 
 const Footer: React.FC = () => {
   return (
