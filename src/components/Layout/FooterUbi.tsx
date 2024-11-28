@@ -5,7 +5,7 @@ function FooterUbi() {
   return (
     <div>
       <h2 className="text-xl font-semibold text-white mb-4">Ubicación</h2>
-      <div className="h-48 rounded overflow-hidden">
+      <div className="h-48 rounded overflow-hidden z-10">
         <MapContainer
           center={[38.294503413284055, -0.7328529311591067]}
           zoom={15}

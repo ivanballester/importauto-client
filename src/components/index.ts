@@ -22,11 +22,13 @@ export { default as Ubicacion } from "./SVGs/Ubicacion";
 export { default as Filter } from "./SVGs/Filter";
 export { default as Right } from "./SVGs/Right";
 export { default as Left } from "./SVGs/Left";
+export { default as Sort } from "./SVGs/Sort";
 
 // UI
 export { default as SearchBar } from "./UI/SearchBar";
 export { default as Pagination } from "./UI/Pagination";
-export { default as Sort } from "./SVGs/Sort";
+export { default as SortModal } from "./UI/SortModal";
+export { default as FiltersModal } from "./UI/FiltersModal";
 
 // Componentes en la raíz de "components"
 export { default as CarCard } from "./CarCard";
