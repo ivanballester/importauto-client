@@ -10,7 +10,7 @@ function FooterUbi() {
           center={[38.294503413284055, -0.7328529311591067]}
           zoom={15}
           scrollWheelZoom={false}
-          className="h-full w-full"
+          className="h-full w-full relative z-0"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Marker position={[38.294503413284055, -0.7328529311591067]}>

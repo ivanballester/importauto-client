@@ -16,3 +16,45 @@
 .slick-next {
   @apply right-4;
 }
+/* Estilos del slider */
+.horizontal-slider {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0; /* Color de fondo del track */
+  border-radius: 8px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.horizontal-slider:hover {
+  background-color: #cbd5e0; /* Color de fondo cuando se pasa el mouse por encima */
+}
+
+/* Estilos del thumb */
+.thumb {
+  width: 20px;
+  height: 20px;
+  background-color: red; /* Color del círculo */
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+/* Cuando el thumb está siendo arrastrado */
+.thumb:active {
+  transform: scale(1.2); /* Aumentar el tamaño del thumb al hacer clic */
+}
+
+/* Estilos del track del slider */
+.track {
+  background: #f1f5f9; /* Color de fondo del track */
+  border-radius: 8px;
+}
+
+/* Estilo para las etiquetas de los valores */
+.slider-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}

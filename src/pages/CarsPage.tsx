@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import service from "../service/service.config";
 import {
   Filter,
@@ -9,6 +10,7 @@ import {
   SearchBar,
   Pagination,
   SortModal,
+  FiltersModal,
 } from "../components";
 
 interface Car {
@@ -27,6 +29,7 @@ interface Car {
 }
 
 const CarsPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [cars, setCars] = useState<Car[]>([]);
   const [filteredCars, setFilteredCars] = useState<Car[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -36,8 +39,24 @@ const CarsPage: React.FC = () => {
   const [carsPerPage, setCarsPerPage] = useState<number>(6);
   const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
-  const [selectedFilters, setSelectedFilters] = useState<{ brands: string[] }>({
+  const [selectedFilters, setSelectedFilters] = useState<{
+    brands: string[];
+    year: { min: number; max: number };
+    price: { min: number; max: number };
+    kilometers: { min: number; max: number };
+    fuelTypes: string[];
+    horsepower: { min: number; max: number };
+    seats: { min: number; max: number };
+    transmissions: string[];
+  }>({
     brands: [],
+    year: { min: 1950, max: 2024 },
+    price: { min: 0, max: 300000 },
+    kilometers: { min: 0, max: 300000 },
+    fuelTypes: [],
+    horsepower: { min: 0, max: 3000 },
+    seats: { min: 0, max: 10 },
+    transmissions: [],
   });
 
   const fetchCars = async () => {
@@ -114,44 +133,84 @@ const CarsPage: React.FC = () => {
 
   const totalPages = Math.ceil(filteredCars.length / carsPerPage);
 
-  const handleCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    brand: string
-  ) => {
-    const { checked } = event.target;
-
-    setSelectedFilters((prev) => {
-      if (checked) {
-        // Añadir la marca si está seleccionada
-        return { ...prev, brands: [...prev.brands, brand] };
-      } else {
-        // Remover la marca si está deseleccionada
-        return { ...prev, brands: prev.brands.filter((b) => b !== brand) };
-      }
-    });
-  };
   const applyFilters = async () => {
     try {
-      setIsFilterModalOpen(false); // Cierra el modal
+      setIsFilterModalOpen(false);
 
-      // Llama al backend con los filtros seleccionados
-      const res = await service.get("/cars", {
-        params: {
-          brands: selectedFilters.brands.join(","), // Envía las marcas como una lista separada por comas
-        },
-      });
+      // Construir los parámetros dinámicamente
+      const params: any = {};
+      if (selectedFilters.brands.length > 0) {
+        params.brand = selectedFilters.brands.join(",");
+      }
+      if (selectedFilters.year.min) {
+        params.yearMin = selectedFilters.year.min;
+      }
+      if (selectedFilters.year.max) {
+        params.yearMax = selectedFilters.year.max;
+      }
+      if (selectedFilters.price.min) {
+        params.priceMin = selectedFilters.price.min;
+      }
+      if (selectedFilters.price.max) {
+        params.priceMax = selectedFilters.price.max;
+      }
+      if (selectedFilters.kilometers.min) {
+        params.kilometersMin = selectedFilters.kilometers.min;
+      }
+      if (selectedFilters.kilometers.max) {
+        params.kilometersMax = selectedFilters.kilometers.max;
+      }
+      if (selectedFilters.fuelTypes.length > 0) {
+        params.fuelType = selectedFilters.fuelTypes.join(",");
+      }
+      if (selectedFilters.horsepower.min) {
+        params.horsepowerMin = selectedFilters.horsepower.min;
+      }
+      if (selectedFilters.horsepower.max) {
+        params.horsepowerMax = selectedFilters.horsepower.max;
+      }
+      if (selectedFilters.seats.min) {
+        params.seatsMin = selectedFilters.seats.min;
+      }
+      if (selectedFilters.seats.max) {
+        params.seatsMax = selectedFilters.seats.max;
+      }
+      if (selectedFilters.transmissions.length > 0) {
+        params.transmission = selectedFilters.transmissions.join(",");
+      }
+      setSearchParams(params);
+      console.log(params);
 
-      // Actualiza los coches filtrados
+      const res = await service.get("/cars/filters", { params });
+      console.log(res.data);
       setFilteredCars(res.data);
     } catch (error) {
       console.error("Error al aplicar filtros", error);
     }
   };
-
+  const clearFilters = () => {
+    setSelectedFilters({
+      brands: [],
+      year: { min: 1950, max: 2024 },
+      price: { min: 0, max: 300000 },
+      kilometers: { min: 0, max: 300000 },
+      fuelTypes: [],
+      horsepower: { min: 0, max: 3000 },
+      seats: { min: 0, max: 10 },
+      transmissions: [],
+    });
+    setSearchParams({});
+    setFilteredCars(cars);
+  };
   useEffect(() => {
     fetchCars();
   }, []);
-  console.log(selectedFilters);
+  console.log(
+    selectedFilters.brands,
+    selectedFilters.year,
+    selectedFilters.price,
+    selectedFilters.kilometers
+  );
 
   if (loading) return <Loading />;
   if (error) return <ErrorMessage message={error} />;
@@ -160,63 +219,23 @@ const CarsPage: React.FC = () => {
     <div>
       <SearchBar onSearch={handleSearch} />
       <div className="flex justify-center items-center max-w-screen-xl mx-auto ">
-        <div
-          className=" relative flex items-center justify-center border rounded-lg py-2 px-4 w-full max-w-[300px] ml-4 cursor-pointer"
-          onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
-        >
-          <div className="flex items-center cursor-pointer">
+        <div className=" relative flex items-center justify-center border rounded-lg py-2 px-4 w-full max-w-[300px] ml-4 cursor-pointer">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
+          >
             <Filter />
             <span className="ml-2">Filtros</span>
           </div>
-
-          {isFilterModalOpen && (
-            <div className="absolute top-full mt-2 bg-white border rounded shadow-lg w-full z-50">
-              {/* Encabezado del modal */}
-              <div className="px-4 py-2 border-b">
-                <span className="font-bold">Filtros</span>
-              </div>
-
-              {/* Contenido del modal */}
-              <div className="px-4 py-2">
-                <p className="mb-2 font-medium">Marcas disponibles</p>
-
-                {cars
-                  .map((car: Car) => car.brand)
-                  .filter((value, index, self) => self.indexOf(value) === index) // Eliminar duplicados
-                  .map((brand: string) => (
-                    <div key={brand} className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        id={brand}
-                        name={brand}
-                        value={brand}
-                        checked={selectedFilters.brands.includes(brand)} // Verifica si está seleccionado
-                        onChange={(e) => handleCheckboxChange(e, brand)} // Maneja cambios
-                      />
-                      <label htmlFor={brand} className="ml-2">
-                        {brand}
-                      </label>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Botones de acción */}
-              <div className="px-4 py-2 border-t flex justify-end">
-                <button
-                  className="mr-2 bg-gray-200 text-gray-800 px-4 py-2 rounded"
-                  onClick={() => setIsFilterModalOpen(false)} // Cierra el modal sin aplicar
-                >
-                  Cerrar
-                </button>
-                <button
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
-                  onClick={applyFilters} // Aplica los filtros y cierra el modal
-                >
-                  Aplicar filtros
-                </button>
-              </div>
-            </div>
-          )}
+          <FiltersModal
+            isOpen={isFilterModalOpen}
+            onClose={() => setIsFilterModalOpen(false)}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
+            cars={cars}
+            applyFilters={applyFilters}
+            clearFilters={clearFilters}
+          />
         </div>
 
         <div

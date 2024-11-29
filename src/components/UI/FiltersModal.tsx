@@ -1,277 +1,335 @@
 import React from "react";
+import ReactSlider from "react-slider";
+import { useState } from "react";
 
-interface FiltersModalProps {
+interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  filters: any;
-  selectedFilters: any;
-  onFilterChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    filterName: string
-  ) => void;
+  selectedFilters: {
+    brands: string[];
+    year: { min: number; max: number };
+    price: { min: number; max: number };
+    kilometers: { min: number; max: number };
+    fuelTypes: string[];
+    horsepower: { min: number; max: number };
+    seats: { min: number; max: number };
+    transmissions: string[];
+  };
+  setSelectedFilters: React.Dispatch<
+    React.SetStateAction<{
+      brands: string[];
+      year: { min: number; max: number };
+      price: { min: number; max: number };
+      kilometers: { min: number; max: number };
+      fuelTypes: string[];
+      horsepower: { min: number; max: number };
+      seats: { min: number; max: number };
+      transmissions: string[];
+    }>
+  >;
+  cars: { brand: string; fuelType: string; transmission: string }[];
+  applyFilters: () => void;
+  clearFilters: () => void;
 }
 
-const FiltersModal: React.FC<FiltersModalProps> = ({
+const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
-  filters,
   selectedFilters,
-  onFilterChange,
+  setSelectedFilters,
+  cars,
+  applyFilters,
+  clearFilters,
 }) => {
-  // Handler para manejar el cambio en los sliders
-  const handleSliderChange = (value: number[], filterName: string) => {
-    onFilterChange(
-      {
-        target: {
-          value: value[0],
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>,
-      `${filterName}.min`
-    );
-    onFilterChange(
-      {
-        target: {
-          value: value[1],
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>,
-      `${filterName}.max`
-    );
+  const [showBrands, setShowBrands] = useState<boolean>(false);
+  const [showPrice, setShowPrice] = useState<boolean>(false);
+  const [showYear, setShowYear] = useState<boolean>(false);
+  const [showKilometers, setShowKilometers] = useState<boolean>(false);
+  const [showHorsepower, setShowHorsepower] = useState<boolean>(false);
+  const [showSeats, setShowSeats] = useState<boolean>(false);
+  const [showTransmissions, setShowTransmissions] = useState<boolean>(false);
+  const [showFuelTypes, setShowFuelTypes] = useState<boolean>(false);
+
+  const toggleVisibility = (
+    setter: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    setter((prev) => !prev);
+  };
+
+  if (!isOpen) return null;
+
+  const uniqueBrands = Array.from(new Set(cars.map((car) => car.brand)));
+  const uniqueFuelTypes = Array.from(new Set(cars.map((car) => car.fuelType)));
+  const uniqueTransmissions = Array.from(
+    new Set(cars.map((car) => car.transmission))
+  );
+
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    brand: string
+  ) => {
+    const { checked } = event.target;
+    setSelectedFilters((prev) => {
+      if (checked) {
+        return { ...prev, brands: [...prev.brands, brand] };
+      } else {
+        return { ...prev, brands: prev.brands.filter((b) => b !== brand) };
+      }
+    });
   };
 
   return (
     <div
-      className={`${
-        isOpen ? "block" : "hidden"
-      } fixed inset-0 z-50 bg-gray-500 bg-opacity-50 flex justify-center items-center`}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      onClick={onClose}
     >
-      <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3">
-        <h2 className="text-xl font-bold mb-4">Filtros</h2>
+      <div
+        className="bg-white rounded-lg w-full max-w-lg p-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="px-4 py-2 border-b">
+          <span className="font-bold">Filtros</span>
+        </div>
 
-        {/* Marca */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Marca</label>
-          <select
-            value={selectedFilters.brand}
-            onChange={(e) => onFilterChange(e, "brand")}
-            className="w-full p-2 border border-gray-300 rounded-lg"
+        <div className="px-4 py-2 ">
+          <p
+            className="mb-2 font-medium cursor-pointer"
+            onClick={() => toggleVisibility(setShowBrands)}
           >
-            <option value="">Seleccionar Marca</option>
-            {(filters.brand || []).map((option: any) => (
-              <option key={option.name} value={option.name}>
-                {option.name} ({option.count})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Tipo de combustible */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Tipo de Combustible</label>
-          <select
-            value={selectedFilters.fuelType}
-            onChange={(e) => onFilterChange(e, "fuelType")}
-            className="w-full p-2 border border-gray-300 rounded-lg"
+            Marcas disponibles
+            {showBrands ? " -" : " +"}
+          </p>
+          {showBrands && (
+            <div>
+              {uniqueBrands.map((brand: string) => (
+                <div key={brand} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={brand}
+                    name={brand}
+                    checked={selectedFilters.brands.includes(brand)}
+                    onChange={(e) => handleCheckboxChange(e, brand)}
+                  />
+                  <label htmlFor={brand} className="ml-2">
+                    {brand}
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+          <p
+            className="mb-2 mt-6 font-medium cursor-pointer"
+            onClick={() => toggleVisibility(setShowFuelTypes)}
           >
-            <option value="">Seleccionar Combustible</option>
-            {(filters.fuelType || []).map((option: any) => (
-              <option key={option.name} value={option.name}>
-                {option.name} ({option.count})
-              </option>
+            Tipo de Combustible
+            {showFuelTypes ? " -" : " +"}
+          </p>
+          {showFuelTypes &&
+            uniqueFuelTypes.map((fuelType: string) => (
+              <div key={fuelType} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id={fuelType}
+                  name={fuelType}
+                  checked={selectedFilters.fuelTypes.includes(fuelType)}
+                  onChange={(e) => handleCheckboxChange(e, fuelType)}
+                />
+                <label htmlFor={fuelType} className="ml-2">
+                  {fuelType}
+                </label>
+              </div>
             ))}
-          </select>
-        </div>
-
-        {/* Tipo de motor */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Tipo de Motor</label>
-          <select
-            value={selectedFilters.engine}
-            onChange={(e) => onFilterChange(e, "engine")}
-            className="w-full p-2 border border-gray-300 rounded-lg"
+          <p
+            className="mb-2 mt-6 font-medium"
+            onClick={() => toggleVisibility(setShowTransmissions)}
           >
-            <option value="">Seleccionar Motor</option>
-            {(filters.engine || []).map((option: any) => (
-              <option key={option.name} value={option.name}>
-                {option.name} ({option.count})
-              </option>
-            ))}
-          </select>
-        </div>
+            Transmision {showTransmissions ? " -" : " +"}
+          </p>
+          {showTransmissions && (
+            <div>
+              {uniqueTransmissions.map((transmission: string) => (
+                <div key={transmission} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={transmission}
+                    name={transmission}
+                    checked={selectedFilters.transmissions.includes(
+                      transmission
+                    )}
+                    onChange={(e) => handleCheckboxChange(e, transmission)}
+                  />
+                  <label htmlFor={transmission} className="ml-2">
+                    {transmission}
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+          <p
+            className="mb-2 mt-6 font-medium"
+            onClick={() => toggleVisibility(setShowYear)}
+          >
+            Año {showYear ? " -" : " +"}
+          </p>
+          {showYear && (
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              value={[selectedFilters.year.min, selectedFilters.year.max]}
+              min={1950}
+              max={2025}
+              onChange={(value: number[]) =>
+                setSelectedFilters((prev) => ({
+                  ...prev,
+                  year: { min: value[0], max: value[1] },
+                }))
+              }
+              renderThumb={(props, state) => (
+                <div {...props} key={props.key}>
+                  <p className="pt-4 text-sm">{state.valueNow}</p>
+                </div>
+              )}
+            />
+          )}
 
-        {/* Año */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Año</label>
-          <div className="flex justify-between">
-            <input
-              type="number"
-              value={selectedFilters.year.min}
-              onChange={(e) => onFilterChange(e, "year.min")}
-              className="w-1/2 p-2 border border-gray-300 rounded-lg"
-              min={filters.yearRange.min}
-              max={filters.yearRange.max}
+          <p
+            className="mt-6 mb-2 font-medium"
+            onClick={() => toggleVisibility(setShowPrice)}
+          >
+            Precio {showPrice ? " -" : " +"}
+          </p>
+          {showPrice && (
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              value={[selectedFilters.price.min, selectedFilters.price.max]}
+              min={0}
+              max={300000}
+              step={1000}
+              onChange={(value: number[]) =>
+                setSelectedFilters((prev) => ({
+                  ...prev,
+                  price: { min: value[0], max: value[1] },
+                }))
+              }
+              renderThumb={(props, state) => (
+                <div {...props} key={props.key}>
+                  <p className="pt-4 text-sm">{state.valueNow}€</p>
+                </div>
+              )}
             />
-            <span className="mx-2">-</span>
-            <input
-              type="number"
-              value={selectedFilters.year.max}
-              onChange={(e) => onFilterChange(e, "year.max")}
-              className="w-1/2 p-2 border border-gray-300 rounded-lg"
-              min={filters.yearRange.min}
-              max={filters.yearRange.max}
-            />
-          </div>
-        </div>
+          )}
 
-        {/* Kilómetros */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Kilómetros</label>
-          <div className="relative">
-            <input
-              type="range"
+          <p
+            className="mt-6 mb-2 font-medium"
+            onClick={() => toggleVisibility(setShowKilometers)}
+          >
+            Kilómetros {showKilometers ? " -" : " +"}
+          </p>
+          {showKilometers && (
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              value={[
+                selectedFilters.kilometers.min,
+                selectedFilters.kilometers.max,
+              ]}
               min={0}
-              max={filters.maxKilometers}
-              value={selectedFilters.kilometers.min}
-              onChange={(e) =>
-                handleSliderChange(
-                  [+e.target.value, selectedFilters.kilometers.max],
-                  "kilometers"
-                )
+              max={300000}
+              step={500}
+              onChange={(value: number[]) =>
+                setSelectedFilters((prev) => ({
+                  ...prev,
+                  kilometers: { min: value[0], max: value[1] },
+                }))
               }
-              className="w-full"
+              renderThumb={(props, state) => (
+                <div {...props} key={props.key}>
+                  <p className="pt-4 text-sm">{state.valueNow}km</p>
+                </div>
+              )}
             />
-            <input
-              type="range"
+          )}
+          <p
+            className="mt-6 mb-2 font-medium"
+            onClick={() => toggleVisibility(setShowHorsepower)}
+          >
+            Potencia {showHorsepower ? " -" : " +"}
+          </p>
+          {showHorsepower && (
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              value={[
+                selectedFilters.horsepower.min,
+                selectedFilters.horsepower.max,
+              ]}
               min={0}
-              max={filters.maxKilometers}
-              value={selectedFilters.kilometers.max}
-              onChange={(e) =>
-                handleSliderChange(
-                  [selectedFilters.kilometers.min, +e.target.value],
-                  "kilometers"
-                )
+              max={1000}
+              step={50}
+              onChange={(value: number[]) =>
+                setSelectedFilters((prev) => ({
+                  ...prev,
+                  horsepower: { min: value[0], max: value[1] },
+                }))
               }
-              className="absolute top-0 w-full"
+              renderThumb={(props, state) => (
+                <div {...props} key={props.key}>
+                  <p className="pt-4 text-sm">{state.valueNow}cv</p>
+                </div>
+              )}
             />
-          </div>
-          <div className="flex justify-between">
-            <span>{selectedFilters.kilometers.min} km</span>
-            <span>{selectedFilters.kilometers.max} km</span>
-          </div>
+          )}
+          <p
+            className="mt-6 mb-2 font-medium"
+            onClick={() => toggleVisibility(setShowSeats)}
+          >
+            Asientos {showSeats ? " -" : " +"}
+          </p>
+          {showSeats && (
+            <ReactSlider
+              className="horizontal-slider"
+              thumbClassName="thumb"
+              trackClassName="track"
+              value={[selectedFilters.seats.min, selectedFilters.seats.max]}
+              min={0}
+              max={10}
+              step={1}
+              onChange={(value: number[]) =>
+                setSelectedFilters((prev) => ({
+                  ...prev,
+                  seats: { min: value[0], max: value[1] },
+                }))
+              }
+              renderThumb={(props, state) => (
+                <div {...props} key={props.key}>
+                  <p className="pt-4 text-sm">{state.valueNow}</p>
+                </div>
+              )}
+            />
+          )}
         </div>
-
-        {/* Precio */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Precio</label>
-          <div className="relative">
-            <input
-              type="range"
-              min={0}
-              max={filters.maxPrice}
-              value={selectedFilters.price.min}
-              onChange={(e) =>
-                handleSliderChange(
-                  [+e.target.value, selectedFilters.price.max],
-                  "price"
-                )
-              }
-              className="w-full"
-            />
-            <input
-              type="range"
-              min={0}
-              max={filters.maxPrice}
-              value={selectedFilters.price.max}
-              onChange={(e) =>
-                handleSliderChange(
-                  [selectedFilters.price.min, +e.target.value],
-                  "price"
-                )
-              }
-              className="absolute top-0 w-full"
-            />
-          </div>
-          <div className="flex justify-between">
-            <span>{selectedFilters.price.min} €</span>
-            <span>{selectedFilters.price.max} €</span>
-          </div>
-        </div>
-
-        {/* Caballos de Fuerza */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Caballos de Fuerza</label>
-          <div className="relative">
-            <input
-              type="range"
-              min={0}
-              max={filters.maxHorsepower}
-              value={selectedFilters.horsepower.min}
-              onChange={(e) =>
-                handleSliderChange(
-                  [+e.target.value, selectedFilters.horsepower.max],
-                  "horsepower"
-                )
-              }
-              className="w-full"
-            />
-            <input
-              type="range"
-              min={0}
-              max={filters.maxHorsepower}
-              value={selectedFilters.horsepower.max}
-              onChange={(e) =>
-                handleSliderChange(
-                  [selectedFilters.horsepower.min, +e.target.value],
-                  "horsepower"
-                )
-              }
-              className="absolute top-0 w-full"
-            />
-          </div>
-          <div className="flex justify-between">
-            <span>{selectedFilters.horsepower.min} hp</span>
-            <span>{selectedFilters.horsepower.max} hp</span>
-          </div>
-        </div>
-
-        {/* Asientos */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Asientos</label>
-          <div className="relative">
-            <input
-              type="range"
-              min={0}
-              max={filters.maxSeats}
-              value={selectedFilters.seats.min}
-              onChange={(e) =>
-                handleSliderChange(
-                  [+e.target.value, selectedFilters.seats.max],
-                  "seats"
-                )
-              }
-              className="w-full"
-            />
-            <input
-              type="range"
-              min={0}
-              max={filters.maxSeats}
-              value={selectedFilters.seats.max}
-              onChange={(e) =>
-                handleSliderChange(
-                  [selectedFilters.seats.min, +e.target.value],
-                  "seats"
-                )
-              }
-              className="absolute top-0 w-full"
-            />
-          </div>
-          <div className="flex justify-between">
-            <span>{selectedFilters.seats.min} asientos</span>
-            <span>{selectedFilters.seats.max} asientos</span>
-          </div>
+        <div className="px-4 py-2 border-t flex justify-end space-x-2 mt-6">
+          <button
+            className="bg-gray-200 text-gray-800 px-4 py-2 rounded"
+            onClick={clearFilters}
+          >
+            Limpiar filtros
+          </button>
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={applyFilters}
+          >
+            Aplicar filtros
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default FiltersModal;
+export default FilterModal;
