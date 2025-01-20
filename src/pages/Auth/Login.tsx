@@ -45,7 +45,7 @@ const Login: React.FC = () => {
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center ">
           <input
             type="email"
             name="email"

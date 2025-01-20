@@ -6,7 +6,7 @@ const Admin: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   if (isAdmin) {
     return children;
   } else {
-    return <div>Not Admin</div>;
+    return null;
   }
 };
 export default Admin;

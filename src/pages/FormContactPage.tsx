@@ -48,72 +48,85 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Formulario de Contacto
-      </h2>
-      {status && <p className="text-center text-red-600">{status}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-gray-700">Nombre</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
-            required
-          />
-        </div>
+    <div>
+      <h1 className="text-3xl font-bold mb-4 text-center">Contacto</h1>
+      <div className="max-w-2xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+        <h2>Telefono: 666666666</h2>
+        <h2>Correo: 3EoZM@example.com</h2>
+        <h2>Direccion: Calle falsa 123</h2>
+        <h2>Horario: Lunes a Viernes de 9:00 a 18:00</h2>
+        <h2>Ubicacion: Calle falsa 123</h2>
+        <Link to="/" className="text-blue-500 hover:underline">
+          Volver al inicio
+        </Link>
+      </div>
+      <div className="max-w-2xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Formulario de Contacto
+        </h2>
+        {status && <p className="text-center text-red-600">{status}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700">Nombre</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              required
+            />
+          </div>
 
-        <div>
-          <label className="block text-gray-700">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
-            required
-          />
-        </div>
+          <div>
+            <label className="block text-gray-700">Correo electrónico</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              required
+            />
+          </div>
 
-        <div>
-          <label className="block text-gray-700">Mensaje</label>
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded mt-1"
-            rows={4}
-            required
-          ></textarea>
-        </div>
+          <div>
+            <label className="block text-gray-700">Mensaje</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              rows={4}
+              required
+            ></textarea>
+          </div>
 
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Enviar mensaje
-          </button>
-        </div>
-      </form>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow-lg text-center">
-            <h3 className="text-lg font-bold mb-4">¡Mensaje enviado!</h3>
-            <p className="mb-4">Tu mensaje ha sido enviado correctamente.</p>
+          <div className="flex justify-center">
             <button
-              onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              type="submit"
+              className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              <Link to="/coches">Volver</Link>
+              Enviar mensaje
             </button>
           </div>
-        </div>
-      )}
+        </form>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded shadow-lg text-center">
+              <h3 className="text-lg font-bold mb-4">¡Mensaje enviado!</h3>
+              <p className="mb-4">Tu mensaje ha sido enviado correctamente.</p>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                <Link to="/coches">Volver</Link>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import service from "../service/service.config";
+
 import {
   Filter,
   Sort,
@@ -50,11 +51,11 @@ const CarsPage: React.FC = () => {
     transmissions: string[];
   }>({
     brands: [],
-    year: { min: 1950, max: 2024 },
+    year: { min: 1950, max: 2025 },
     price: { min: 0, max: 300000 },
     kilometers: { min: 0, max: 300000 },
     fuelTypes: [],
-    horsepower: { min: 0, max: 3000 },
+    horsepower: { min: 0, max: 1000 },
     seats: { min: 0, max: 10 },
     transmissions: [],
   });
@@ -137,66 +138,72 @@ const CarsPage: React.FC = () => {
     try {
       setIsFilterModalOpen(false);
 
-      // Construir los parámetros dinámicamente
-      const params: any = {};
+      // Crear un objeto con filtros activos
+      const params: Record<string, any> = {};
+
+      // Solo añadir filtros que estén seleccionados o activos
       if (selectedFilters.brands.length > 0) {
         params.brand = selectedFilters.brands.join(",");
       }
-      if (selectedFilters.year.min) {
+      if (selectedFilters.year.min !== 1950) {
         params.yearMin = selectedFilters.year.min;
       }
-      if (selectedFilters.year.max) {
+      if (selectedFilters.year.max !== 2025) {
         params.yearMax = selectedFilters.year.max;
       }
-      if (selectedFilters.price.min) {
+      if (selectedFilters.price.min > 0) {
         params.priceMin = selectedFilters.price.min;
       }
-      if (selectedFilters.price.max) {
+      if (selectedFilters.price.max < 300000) {
         params.priceMax = selectedFilters.price.max;
       }
-      if (selectedFilters.kilometers.min) {
+      if (selectedFilters.kilometers.min > 0) {
         params.kilometersMin = selectedFilters.kilometers.min;
       }
-      if (selectedFilters.kilometers.max) {
+      if (selectedFilters.kilometers.max < 300000) {
         params.kilometersMax = selectedFilters.kilometers.max;
       }
       if (selectedFilters.fuelTypes.length > 0) {
         params.fuelType = selectedFilters.fuelTypes.join(",");
       }
-      if (selectedFilters.horsepower.min) {
+      if (selectedFilters.horsepower.min > 0) {
         params.horsepowerMin = selectedFilters.horsepower.min;
       }
-      if (selectedFilters.horsepower.max) {
+      if (selectedFilters.horsepower.max < 1000) {
         params.horsepowerMax = selectedFilters.horsepower.max;
       }
-      if (selectedFilters.seats.min) {
+      if (selectedFilters.seats.min > 0) {
         params.seatsMin = selectedFilters.seats.min;
       }
-      if (selectedFilters.seats.max) {
+      if (selectedFilters.seats.max < 10) {
         params.seatsMax = selectedFilters.seats.max;
       }
       if (selectedFilters.transmissions.length > 0) {
         params.transmission = selectedFilters.transmissions.join(",");
       }
-      setSearchParams(params);
-      console.log(params);
 
+      // Actualizar los parámetros de búsqueda
+      setSearchParams(params);
+
+      // Realizar la llamada a la API con los filtros activos
       const res = await service.get("/cars/filters", { params });
-      console.log(res.data);
+
+      // Actualizar el estado con los resultados filtrados
       setFilteredCars(res.data);
     } catch (error) {
       console.error("Error al aplicar filtros", error);
     }
   };
+
   const clearFilters = () => {
     setSelectedFilters({
       brands: [],
-      year: { min: 1950, max: 2024 },
+      year: { min: 1950, max: 2025 },
       price: { min: 0, max: 300000 },
       kilometers: { min: 0, max: 300000 },
       fuelTypes: [],
-      horsepower: { min: 0, max: 3000 },
-      seats: { min: 0, max: 10 },
+      horsepower: { min: 0, max: 1000 },
+      seats: { min: 0, max: 100 },
       transmissions: [],
     });
     setSearchParams({});
@@ -205,12 +212,6 @@ const CarsPage: React.FC = () => {
   useEffect(() => {
     fetchCars();
   }, []);
-  console.log(
-    selectedFilters.brands,
-    selectedFilters.year,
-    selectedFilters.price,
-    selectedFilters.kilometers
-  );
 
   if (loading) return <Loading />;
   if (error) return <ErrorMessage message={error} />;
@@ -255,6 +256,9 @@ const CarsPage: React.FC = () => {
         </div>
       </div>
 
+      {currentCars.length === 0 && (
+        <p className="text-center">No se encontraron coches.</p>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-screen-xl mx-auto">
         {currentCars.map((car) => (
           <CarCard key={car._id} {...car} handleDeleteCar={handleDeleteCar} />

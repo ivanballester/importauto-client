@@ -86,6 +86,17 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Servicios */}
+      <section className="services bg-gray-200 py-10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-6">Nuestros Servicios</h2>
+          <p className="text-gray-600">
+            Ofrecemos compraventa de vehículos, revisiones técnicas y servicios
+            de reparación para tu coche.
+          </p>
+        </div>
+      </section>
+
       {/* Centro de Noticias */}
       <section className="news py-10">
         <div className="max-w-6xl mx-auto">
@@ -134,17 +145,6 @@ const HomePage: React.FC = () => {
               </button>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Servicios */}
-      <section className="services bg-gray-200 py-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Nuestros Servicios</h2>
-          <p className="text-gray-600">
-            Ofrecemos compraventa de vehículos, revisiones técnicas y servicios
-            de reparación para tu coche.
-          </p>
         </div>
       </section>
     </div>

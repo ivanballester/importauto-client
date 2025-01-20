@@ -1,6 +1,6 @@
 import React from "react";
 import ReactSlider from "react-slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -66,25 +66,31 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    brand: string
+    category: "brands" | "fuelTypes" | "transmissions",
+    value: string
   ) => {
     const { checked } = event.target;
-    setSelectedFilters((prev) => {
-      if (checked) {
-        return { ...prev, brands: [...prev.brands, brand] };
-      } else {
-        return { ...prev, brands: prev.brands.filter((b) => b !== brand) };
-      }
-    });
+
+    const updatedFilters = { ...selectedFilters };
+
+    if (checked) {
+      updatedFilters[category] = [...updatedFilters[category], value];
+    } else {
+      updatedFilters[category] = updatedFilters[category].filter(
+        (item) => item !== value
+      );
+    }
+
+    setSelectedFilters(updatedFilters);
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center "
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg w-full max-w-lg p-4"
+        className="bg-white rounded-lg w-full h-full max-w-lg p-4 overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-4 py-2 border-b">
@@ -108,7 +114,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     id={brand}
                     name={brand}
                     checked={selectedFilters.brands.includes(brand)}
-                    onChange={(e) => handleCheckboxChange(e, brand)}
+                    onChange={(e) => handleCheckboxChange(e, "brands", brand)}
                   />
                   <label htmlFor={brand} className="ml-2">
                     {brand}
@@ -132,7 +138,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   id={fuelType}
                   name={fuelType}
                   checked={selectedFilters.fuelTypes.includes(fuelType)}
-                  onChange={(e) => handleCheckboxChange(e, fuelType)}
+                  onChange={(e) =>
+                    handleCheckboxChange(e, "fuelTypes", fuelType)
+                  }
                 />
                 <label htmlFor={fuelType} className="ml-2">
                   {fuelType}
@@ -156,7 +164,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     checked={selectedFilters.transmissions.includes(
                       transmission
                     )}
-                    onChange={(e) => handleCheckboxChange(e, transmission)}
+                    onChange={(e) =>
+                      handleCheckboxChange(e, "transmissions", transmission)
+                    }
                   />
                   <label htmlFor={transmission} className="ml-2">
                     {transmission}
