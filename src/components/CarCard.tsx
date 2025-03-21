@@ -26,7 +26,6 @@ const CarCard: React.FC<Car> = ({
   model,
   year,
   price,
-  seats,
   horsepower,
   fuelType,
   engine,

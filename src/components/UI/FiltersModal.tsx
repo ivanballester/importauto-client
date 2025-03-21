@@ -1,6 +1,6 @@
 import React from "react";
 import ReactSlider from "react-slider";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface FilterModalProps {
   isOpen: boolean;

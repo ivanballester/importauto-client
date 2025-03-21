@@ -32,12 +32,11 @@ interface Car {
 const CarsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [cars, setCars] = useState<Car[]>([]);
-  const [filteredCars, setFilteredCars] = useState<Car[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredCars, setFilteredCars] = useState<Car[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [carsPerPage, setCarsPerPage] = useState<number>(6);
+  const carsPerPage = 6;
   const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [selectedFilters, setSelectedFilters] = useState<{
@@ -63,7 +62,6 @@ const CarsPage: React.FC = () => {
   const fetchCars = async () => {
     try {
       const res = await service.get("/cars");
-      console.log(res.data);
       setCars(res.data);
       setFilteredCars(res.data);
     } catch (error) {
@@ -76,7 +74,6 @@ const CarsPage: React.FC = () => {
   const handleDeleteCar = async (carId: string) => {
     try {
       await service.delete(`/cars/${carId}`);
-      setCars((prevCars) => prevCars.filter((car) => car._id !== carId));
       setFilteredCars((prevCars) =>
         prevCars.filter((car) => car._id !== carId)
       );
@@ -86,7 +83,6 @@ const CarsPage: React.FC = () => {
   };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
     if (query === "") {
       setFilteredCars(cars);
     } else {
@@ -138,10 +134,8 @@ const CarsPage: React.FC = () => {
     try {
       setIsFilterModalOpen(false);
 
-      // Crear un objeto con filtros activos
       const params: Record<string, any> = {};
 
-      // Solo añadir filtros que estén seleccionados o activos
       if (selectedFilters.brands.length > 0) {
         params.brand = selectedFilters.brands.join(",");
       }
@@ -182,13 +176,9 @@ const CarsPage: React.FC = () => {
         params.transmission = selectedFilters.transmissions.join(",");
       }
 
-      // Actualizar los parámetros de búsqueda
       setSearchParams(params);
 
-      // Realizar la llamada a la API con los filtros activos
       const res = await service.get("/cars/filters", { params });
-
-      // Actualizar el estado con los resultados filtrados
       setFilteredCars(res.data);
     } catch (error) {
       console.error("Error al aplicar filtros", error);
@@ -203,12 +193,13 @@ const CarsPage: React.FC = () => {
       kilometers: { min: 0, max: 300000 },
       fuelTypes: [],
       horsepower: { min: 0, max: 1000 },
-      seats: { min: 0, max: 100 },
+      seats: { min: 0, max: 10 },
       transmissions: [],
     });
     setSearchParams({});
     setFilteredCars(cars);
   };
+
   useEffect(() => {
     fetchCars();
   }, []);
